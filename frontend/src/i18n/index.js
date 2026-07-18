@@ -4,24 +4,21 @@ import languages from '../../../locales/languages.json'
 const localeFiles = import.meta.glob('../../../locales/!(languages).json', { eager: true })
 
 const messages = {}
-const availableLocales = []
 
 for (const path in localeFiles) {
   const key = path.match(/\/([^/]+)\.json$/)[1]
   if (languages[key]) {
     messages[key] = localeFiles[path].default
-    availableLocales.push({ key, label: languages[key].label })
   }
 }
 
-const savedLocale = localStorage.getItem('locale') || 'zh'
-
 const i18n = createI18n({
   legacy: false,
-  locale: savedLocale,
-  fallbackLocale: 'zh',
+  locale: 'pt-BR',
+  fallbackLocale: 'pt-BR',
   messages
 })
 
-export { availableLocales }
+document.documentElement.lang = 'pt-BR'
+
 export default i18n

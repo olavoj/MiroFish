@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:locale": "node scripts/validate-fixed-locale.mjs",
+    "audit:visible-language": "node scripts/audit-visible-language.mjs"
   },
   "dependencies": {
     "axios": "^1.14.0",
@@ -16,6 +18,8 @@
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
+    "@vue/compiler-dom": "^3.5.25",
+    "@vue/compiler-sfc": "^3.5.25",
     "@vitejs/plugin-vue": "^6.0.1",
     "vite": "^7.2.4"
   }

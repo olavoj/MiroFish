@@ -21,10 +21,9 @@
       </div>
 
       <div class="header-right">
-        <LanguageSwitcher />
         <div class="step-divider"></div>
         <div class="workflow-step">
-          <span class="step-num">Step 4/5</span>
+          <span class="step-num">Etapa 4/5</span>
           <span class="step-name">{{ $tm('main.stepNames')[3] }}</span>
         </div>
         <div class="step-divider"></div>
@@ -72,7 +71,6 @@ import Step4Report from '../components/Step4Report.vue'
 import { getProject, getGraphData } from '../api/graph'
 import { getSimulation } from '../api/simulation'
 import { getReport } from '../api/report'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -114,14 +112,14 @@ const statusClass = computed(() => {
 })
 
 const statusText = computed(() => {
-  if (currentStatus.value === 'error') return 'Error'
-  if (currentStatus.value === 'completed') return 'Completed'
-  return 'Generating'
+  if (currentStatus.value === 'error') return 'Erro'
+  if (currentStatus.value === 'completed') return 'Concluído'
+  return 'Gerando'
 })
 
 // --- Helpers ---
 const addLog = (msg) => {
-  const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
+  const time = new Date().toLocaleTimeString('pt-BR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
   if (systemLogs.value.length > 200) {
     systemLogs.value.shift()

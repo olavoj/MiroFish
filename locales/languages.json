@@ -19,6 +19,10 @@
     "label": "Português",
     "llmInstruction": "Por favor, responda em português."
   },
+  "pt-BR": {
+    "label": "Português (Brasil)",
+    "llmInstruction": "Responda sempre em português do Brasil, com linguagem natural e clara. Preserve nomes próprios, marcas, trechos literais fornecidos pelo usuário, nomes de campos JSON, identificadores técnicos e valores enumerados exigidos pelas APIs."
+  },
   "ru": {
     "label": "Русский",
     "llmInstruction": "Пожалуйста, отвечайте на русском языке."

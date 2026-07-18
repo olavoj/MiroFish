@@ -18,7 +18,7 @@ from zep_cloud.client import Zep
 from ..config import Config
 from ..utils.logger import get_logger
 from ..utils.llm_client import LLMClient
-from ..utils.locale import get_locale, t
+from ..utils.locale import get_language_instruction, t
 from ..utils.zep_paging import fetch_all_nodes, fetch_all_edges
 
 logger = get_logger('mirofish.zep_tools')
@@ -1639,27 +1639,29 @@ class ZepToolsService:
     ) -> List[str]:
         """使用LLM生成采访问题"""
         
-        agent_roles = [a.get("profession", "未知") for a in selected_agents]
+        agent_roles = [a.get("profession", "não informado") for a in selected_agents]
         
-        system_prompt = """你是一个专业的记者/采访者。根据采访需求，生成3-5个深度采访问题。
+        system_prompt = f"""Você é uma jornalista e entrevistadora experiente. Com base na necessidade da entrevista, crie de 3 a 5 perguntas aprofundadas.
 
-问题要求：
-1. 开放性问题，鼓励详细回答
-2. 针对不同角色可能有不同答案
-3. 涵盖事实、观点、感受等多个维度
-4. 语言自然，像真实采访一样
-5. 每个问题控制在50字以内，简洁明了
-6. 直接提问，不要包含背景说明或前缀
+Requisitos das perguntas:
+1. Faça perguntas abertas, que incentivem respostas detalhadas.
+2. Considere que pessoas com papéis diferentes podem responder de formas distintas.
+3. Abranja fatos, opiniões e sentimentos.
+4. Use linguagem natural, como em uma entrevista real.
+5. Limite cada pergunta a 50 caracteres, mantendo-a clara e objetiva.
+6. Faça perguntas diretas, sem contexto adicional ou prefixos.
 
-返回JSON格式：{"questions": ["问题1", "问题2", ...]}"""
+{get_language_instruction()}
 
-        user_prompt = f"""采访需求：{interview_requirement}
+Retorne JSON no formato: {{"questions": ["pergunta 1", "pergunta 2", ...]}}"""
 
-模拟背景：{simulation_requirement if simulation_requirement else "未提供"}
+        user_prompt = f"""Necessidade da entrevista: {interview_requirement}
 
-采访对象角色：{', '.join(agent_roles)}
+Contexto da simulação: {simulation_requirement if simulation_requirement else "Não informado"}
 
-请生成3-5个采访问题。"""
+Papéis das pessoas entrevistadas: {', '.join(agent_roles)}
+
+Gere de 3 a 5 perguntas para a entrevista."""
 
         try:
             response = self.llm.chat_json(
@@ -1670,14 +1672,14 @@ class ZepToolsService:
                 temperature=0.5
             )
             
-            return response.get("questions", [f"关于{interview_requirement}，您有什么看法？"])
+            return response.get("questions", [f"Qual é a sua opinião sobre {interview_requirement}?"])
             
         except Exception as e:
             logger.warning(t("console.generateInterviewQuestionsFailed", error=e))
             return [
-                f"关于{interview_requirement}，您的观点是什么？",
-                "这件事对您或您所代表的群体有什么影响？",
-                "您认为应该如何解决或改进这个问题？"
+                f"Qual é a sua opinião sobre {interview_requirement}?",
+                "Que impacto isso teve sobre você ou sobre o grupo que você representa?",
+                "Como você acredita que esse problema poderia ser resolvido ou melhorado?"
             ]
     
     def _generate_interview_summary(
@@ -1688,36 +1690,38 @@ class ZepToolsService:
         """生成采访摘要"""
         
         if not interviews:
-            return "未完成任何采访"
-        
+            return "Nenhuma entrevista foi concluída."
+
         # 收集所有采访内容
         interview_texts = []
         for interview in interviews:
-            interview_texts.append(f"【{interview.agent_name}（{interview.agent_role}）】\n{interview.response[:500]}")
-        
-        quote_instruction = "引用受访者原话时使用中文引号「」" if get_locale() == 'zh' else 'Use quotation marks "" when quoting interviewees'
-        system_prompt = f"""你是一个专业的新闻编辑。请根据多位受访者的回答，生成一份采访摘要。
+            interview_texts.append(f"[{interview.agent_name} ({interview.agent_role})]\n{interview.response[:500]}")
 
-摘要要求：
-1. 提炼各方主要观点
-2. 指出观点的共识和分歧
-3. 突出有价值的引言
-4. 客观中立，不偏袒任何一方
-5. 控制在1000字内
+        quote_instruction = 'Use aspas duplas ao citar literalmente as pessoas entrevistadas e preserve o texto original da citação.'
+        system_prompt = f"""Você é uma editora de notícias experiente. Com base nas respostas de várias pessoas entrevistadas, produza um resumo da entrevista.
 
-格式约束（必须遵守）：
-- 使用纯文本段落，用空行分隔不同部分
-- 不要使用Markdown标题（如#、##、###）
-- 不要使用分割线（如---、***）
+Requisitos do resumo:
+1. Sintetize os principais pontos de vista.
+2. Identifique consensos e divergências.
+3. Destaque citações relevantes.
+4. Mantenha um tom objetivo e imparcial.
+5. Limite o texto a 1.000 caracteres.
+
+{get_language_instruction()}
+
+Restrições de formato (obrigatórias):
+- Use parágrafos de texto simples e separe as seções com uma linha em branco.
+- Não use títulos Markdown (como #, ## ou ###).
+- Não use linhas divisórias (como --- ou ***).
 - {quote_instruction}
-- 可以使用**加粗**标记关键词，但不要使用其他Markdown语法"""
+- Você pode usar **negrito** para palavras-chave, mas não use outra sintaxe Markdown."""
 
-        user_prompt = f"""采访主题：{interview_requirement}
+        user_prompt = f"""Tema da entrevista: {interview_requirement}
 
-采访内容：
+Conteúdo das entrevistas:
 {"".join(interview_texts)}
 
-请生成采访摘要。"""
+Gere o resumo da entrevista."""
 
         try:
             summary = self.llm.chat(
@@ -1733,4 +1737,6 @@ class ZepToolsService:
         except Exception as e:
             logger.warning(t("console.generateInterviewSummaryFailed", error=e))
             # 降级：简单拼接
-            return f"共采访了{len(interviews)}位受访者，包括：" + "、".join([i.agent_name for i in interviews])
+            return f"Foram entrevistadas {len(interviews)} pessoas: " + ", ".join(
+                interview.agent_name for interview in interviews
+            )

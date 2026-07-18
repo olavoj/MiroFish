@@ -22,19 +22,19 @@
 
           <div v-if="simulationId" class="info-card">
             <div class="info-row">
-              <span class="info-label">Project ID</span>
+              <span class="info-label">ID do projeto</span>
               <span class="info-value mono">{{ projectData?.project_id }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Graph ID</span>
+              <span class="info-label">ID do grafo</span>
               <span class="info-value mono">{{ projectData?.graph_id }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Simulation ID</span>
+              <span class="info-label">ID da simulação</span>
               <span class="info-value mono">{{ simulationId }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Task ID</span>
+              <span class="info-label">ID da tarefa</span>
               <span class="info-value mono">{{ taskId || $t('step2.asyncTaskDone') }}</span>
             </div>
           </div>
@@ -90,7 +90,7 @@
                 @click="selectProfile(profile)"
               >
                 <div class="profile-header">
-                  <span class="profile-realname">{{ profile.username || 'Unknown' }}</span>
+                  <span class="profile-realname">{{ profile.username || 'Desconhecido' }}</span>
                   <span class="profile-username">@{{ profile.name || `agent_${idx}` }}</span>
                 </div>
                 <div class="profile-meta">
@@ -194,7 +194,7 @@
                   <!-- 卡片头部 -->
                   <div class="agent-card-header">
                     <div class="agent-identity">
-                      <span class="agent-id">Agent {{ agent.agent_id }}</span>
+                      <span class="agent-id">Agente {{ agent.agent_id }}</span>
                       <span class="agent-name">{{ agent.entity_name }}</span>
                     </div>
                     <div class="agent-tags">
@@ -405,7 +405,7 @@
                     <div class="post-header">
                       <span class="post-role">{{ post.poster_type }}</span>
                       <span class="post-agent-info">
-                        <span class="post-id">Agent {{ post.poster_agent_id }}</span>
+                        <span class="post-id">Agente {{ post.poster_agent_id }}</span>
                         <span class="post-username">@{{ getAgentUsername(post.poster_agent_id) }}</span>
                       </span>
                     </div>
@@ -618,7 +618,7 @@
     <!-- Bottom Info / Logs -->
     <div class="system-logs">
       <div class="log-header">
-        <span class="log-title">SYSTEM DASHBOARD</span>
+        <span class="log-title">PAINEL DO SISTEMA</span>
         <span class="log-id">{{ simulationId || 'NO_SIMULATION' }}</span>
       </div>
       <div class="log-content" ref="logContent">
@@ -677,16 +677,16 @@ const customMaxRounds = ref(40)   // 默认推荐40轮
 
 // Watch stage to update phase
 watch(currentStage, (newStage) => {
-  if (newStage === '生成Agent人设' || newStage === 'generating_profiles') {
+  if (newStage === 'Gerando perfis de agentes' || newStage === 'generating_profiles') {
     phase.value = 1
-  } else if (newStage === '生成模拟配置' || newStage === 'generating_config') {
+  } else if (newStage === 'Gerando configuração da simulação' || newStage === 'generating_config') {
     phase.value = 2
     // 进入配置生成阶段，开始轮询配置
     if (!configTimer) {
       addLog(t('log.startGeneratingConfig'))
       startConfigPolling()
     }
-  } else if (newStage === '准备模拟脚本' || newStage === 'copying_scripts') {
+  } else if (newStage === 'Preparando scripts de simulação' || newStage === 'copying_scripts') {
     phase.value = 2 // 仍属于配置阶段
   }
 })
@@ -904,7 +904,7 @@ const pollPrepareStatus = async () => {
       }
     }
   } catch (err) {
-    console.warn('轮询状态失败:', err)
+    console.warn('Falha ao consultar o status:', err)
   }
 }
 
@@ -948,7 +948,7 @@ const fetchProfilesRealtime = async () => {
       }
     }
   } catch (err) {
-    console.warn('获取 Profiles 失败:', err)
+    console.warn('Falha ao obter perfis:', err)
   }
 }
 
@@ -1016,7 +1016,7 @@ const fetchConfigRealtime = async () => {
       }
     }
   } catch (err) {
-    console.warn('获取 Config 失败:', err)
+    console.warn('Falha ao obter a configuração:', err)
   }
 }
 

@@ -93,6 +93,8 @@ Click the image to watch MiroFish's deep prediction of the lost ending based on 
 
 ## 🚀 Quick Start
 
+> **Edição em português do Brasil:** esta versão mantém a interface, as mensagens operacionais e as respostas geradas pela IA em português do Brasil. A API de LLM configurada em `.env` deve oferecer um endpoint compatível com a API da OpenAI; nunca envie o arquivo `.env` ou suas chaves ao GitHub.
+
 ### Option 1: Source Code Deployment (Recommended)
 
 #### Prerequisites

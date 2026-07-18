@@ -1,9 +1,9 @@
 import json
 import os
 import threading
-from flask import request, has_request_context
 
 _thread_local = threading.local()
+FIXED_LOCALE = 'pt-BR'
 
 _locales_dir = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'locales')
 
@@ -21,20 +21,16 @@ for filename in os.listdir(_locales_dir):
 
 
 def set_locale(locale: str):
-    """Set locale for current thread. Call at the start of background threads."""
-    _thread_local.locale = locale
+    """Keep the fixed Brazilian Portuguese locale in background threads."""
+    _thread_local.locale = FIXED_LOCALE
 
 
 def get_locale() -> str:
-    if has_request_context():
-        raw = request.headers.get('Accept-Language', 'zh')
-        return raw if raw in _translations else 'zh'
-    return getattr(_thread_local, 'locale', 'zh')
+    return FIXED_LOCALE
 
 
 def t(key: str, **kwargs) -> str:
-    locale = get_locale()
-    messages = _translations.get(locale, _translations.get('zh', {}))
+    messages = _translations.get(FIXED_LOCALE, {})
 
     value = messages
     for part in key.split('.'):
@@ -45,7 +41,7 @@ def t(key: str, **kwargs) -> str:
             break
 
     if value is None:
-        value = _translations.get('zh', {})
+        value = _translations.get(FIXED_LOCALE, {})
         for part in key.split('.'):
             if isinstance(value, dict):
                 value = value.get(part)
@@ -64,6 +60,10 @@ def t(key: str, **kwargs) -> str:
 
 
 def get_language_instruction() -> str:
-    locale = get_locale()
-    lang_config = _languages.get(locale, _languages.get('zh', {}))
-    return lang_config.get('llmInstruction', '请使用中文回答。')
+    lang_config = _languages.get(FIXED_LOCALE, {})
+    return lang_config.get(
+        'llmInstruction',
+        'Responda sempre em português do Brasil, com linguagem natural e clara. '
+        'Preserve nomes de campos JSON, identificadores técnicos e valores enumerados '
+        'exigidos pelas APIs.'
+    )

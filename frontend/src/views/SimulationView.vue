@@ -21,10 +21,9 @@
       </div>
 
       <div class="header-right">
-        <LanguageSwitcher />
         <div class="step-divider"></div>
         <div class="workflow-step">
-          <span class="step-num">Step 2/5</span>
+          <span class="step-num">Etapa 2/5</span>
           <span class="step-name">{{ $tm('main.stepNames')[1] }}</span>
         </div>
         <div class="step-divider"></div>
@@ -72,7 +71,6 @@ import GraphPanel from '../components/GraphPanel.vue'
 import Step2EnvSetup from '../components/Step2EnvSetup.vue'
 import { getProject, getGraphData } from '../api/graph'
 import { getSimulation, stopSimulation, getEnvStatus, closeSimulationEnv } from '../api/simulation'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -114,14 +112,14 @@ const statusClass = computed(() => {
 })
 
 const statusText = computed(() => {
-  if (currentStatus.value === 'error') return 'Error'
-  if (currentStatus.value === 'completed') return 'Ready'
-  return 'Preparing'
+  if (currentStatus.value === 'error') return 'Erro'
+  if (currentStatus.value === 'completed') return 'Pronto'
+  return 'Preparando'
 })
 
 // --- Helpers ---
 const addLog = (msg) => {
-  const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
+  const time = new Date().toLocaleTimeString('pt-BR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
   if (systemLogs.value.length > 100) {
     systemLogs.value.shift()
@@ -220,7 +218,7 @@ const checkAndStopRunningSimulation = async () => {
     }
   } catch (err) {
     // 检查环境状态失败不影响后续流程
-    console.warn('检查模拟状态失败:', err)
+    console.warn('Falha ao verificar o status da simulação:', err)
   }
 }
 
@@ -436,4 +434,3 @@ onMounted(async () => {
   border-right: 1px solid #EAEAEA;
 }
 </style>
-

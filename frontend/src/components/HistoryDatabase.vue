@@ -157,7 +157,7 @@
                 @click="goToProject"
                 :disabled="!selectedProject.project_id"
               >
-                <span class="btn-step">Step1</span>
+                <span class="btn-step">Etapa 1</span>
                 <span class="btn-icon">◇</span>
                 <span class="btn-text">{{ $t('history.step1Button') }}</span>
               </button>
@@ -165,7 +165,7 @@
                 class="modal-btn btn-simulation" 
                 @click="goToSimulation"
               >
-                <span class="btn-step">Step2</span>
+                <span class="btn-step">Etapa 2</span>
                 <span class="btn-icon">◈</span>
                 <span class="btn-text">{{ $t('history.step2Button') }}</span>
               </button>
@@ -174,7 +174,7 @@
                 @click="goToReport"
                 :disabled="!selectedProject.report_id"
               >
-                <span class="btn-step">Step4</span>
+                <span class="btn-step">Etapa 4</span>
                 <span class="btn-icon">◆</span>
                 <span class="btn-text">{{ $t('history.step4Button') }}</span>
               </button>
@@ -377,9 +377,9 @@ const getFileType = (filename) => {
 
 // 获取文件类型标签文本
 const getFileTypeLabel = (filename) => {
-  if (!filename) return 'FILE'
+  if (!filename) return 'ARQUIVO'
   const ext = filename.split('.').pop()?.toUpperCase()
-  return ext || 'FILE'
+  return ext || 'ARQUIVO'
 }
 
 // 截断文件名（保留扩展名）
@@ -445,7 +445,7 @@ const loadHistory = async () => {
       projects.value = response.data || []
     }
   } catch (error) {
-    console.error('加载历史项目失败:', error)
+    console.error('Falha ao carregar projetos anteriores:', error)
     projects.value = []
   } finally {
     loading.value = false
